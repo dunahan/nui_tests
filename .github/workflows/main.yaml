@@ -25,4 +25,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: ee_${{ steps.find_branch.outputs.branch }}.mod
-          path: ${{ github.workspace }}/nwn_transitions.mod
+          path: ${{ github.workspace }}/nwn_tests.mod
