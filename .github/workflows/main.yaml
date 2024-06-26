@@ -1,0 +1,28 @@
+name: Run CI Build
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  ci_build:
+    runs-on: ubuntu-latest
+    name: NWN:EE CI Build
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Determine branch name
+        id: find_branch
+        shell: bash
+        run: echo branch=`echo ${GITHUB_HEAD_REF}|tr -c -s '[:alnum:][:blank:]' '_' | sed -e 's/_$//g'` >> $GITHUB_OUTPUT
+
+      - name: Build module
+        uses: Ardesco/nasher4gh@v1
+
+      - name: Save built module
+        uses: actions/upload-artifact@v3
+        with:
+          name: ee_${{ steps.find_branch.outputs.branch }}.mod
+          path: ${{ github.workspace }}/nwn_transitions.mod
