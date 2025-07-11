@@ -1,0 +1,48 @@
+name: create-release
+'on':
+  push:
+    branches:
+      - workflow-test
+
+jobs:
+  ci_build:
+    runs-on: ubuntu-latest
+    name: 'NWN:EE CI Build'
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Build module
+        uses: Ardesco/nasher4gh@v1
+        with:
+          args: '[''pack'', ''--default'', ''-usenwnscriptcomp'']'
+
+      - name: Get current date
+        id: date
+        run: 'echo "::set-output name=date::$(date +''%Y-%m-%d-%H-%M'')"'
+
+      - name: Create release
+        id: create-release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}'
+        with:
+          tag_name: '${{ steps.date.outputs.date }}'
+          release_name: >-
+            ${{ steps.extract_changelog.outputs.version }} | ${{
+            steps.date.outputs.date }}
+          body: |
+            test
+          draft: false
+          prerelease: false
+
+      - name: Upload release asset
+        id: upload-release-asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
+        with:
+          upload_url: '${{ steps.create-release.outputs.upload_url }}'
+          asset_path: '${{ github.workspace }}/nui_test.mod'
+          asset_name: nui_test.mod
+          asset_content_type: application/zip
