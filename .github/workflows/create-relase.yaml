@@ -43,6 +43,6 @@ jobs:
           GITHUB_TOKEN: '${{ secrets.GITHUB_TOKEN }}' 
         with:
           upload_url: '${{ steps.create-release.outputs.upload_url }}'
-          asset_path: '${{ github.workspace }}/nui_test.mod'
-          asset_name: nui_test.mod
+          asset_path: '${{ github.workspace }}/nui_tests.mod'
+          asset_name: nui_tests.mod
           asset_content_type: application/zip
