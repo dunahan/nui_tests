@@ -2,7 +2,7 @@ name: create-release
 'on':
   push:
     branches:
-      - workflow-test
+      - main
 
 jobs:
   ci_build:
