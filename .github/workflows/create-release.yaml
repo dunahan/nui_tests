@@ -6,6 +6,7 @@ name: create-release
 
 jobs:
   ci_build:
+    permissions: write-all
     runs-on: ubuntu-latest
     name: 'NWN:EE CI Build'
     steps:
