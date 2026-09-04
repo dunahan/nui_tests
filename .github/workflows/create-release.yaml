@@ -26,7 +26,16 @@ jobs:
         run: echo "date=$(date +'%Y-%m-%d-%H-%M')" >> "$GITHUB_OUTPUT"
 
       - name: Zip module
-        run: zip -j nui_tests.zip nui_tests.mod
+        id: zip
+        run: |
+          MODFILE=$(ls *.mod | head -n1)
+          if [ -z "$MODFILE" ]; then
+            echo "Kein .mod-File gefunden - Build fehlgeschlagen?"
+            exit 1
+          fi
+          ZIPFILE="${MODFILE%.mod}.zip"
+          zip -j "$ZIPFILE" "$MODFILE"
+          echo "zipfile=$ZIPFILE" >> "$GITHUB_OUTPUT"
 
       - name: Create release
         uses: softprops/action-gh-release@v2
@@ -35,6 +44,6 @@ jobs:
           name: ${{ steps.date.outputs.date }}
           draft: false
           prerelease: false
-          files: nui_tests.zip
+          files: ${{ steps.zip.outputs.zipfile }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
